@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -21,14 +22,20 @@
             wait_for_update: 500
         });
     </script>
-    <!--
-        GOOGLE ADS / GTM : décommentez les 2 lignes ci-dessous et remplacez l'identifiant par le vôtre
-        (AW-XXXX pour Google Ads, ou G-XXXX pour Google Analytics 4). Grâce au Consent Mode v2 ci-dessus
-        et au bandeau de consentement, aucun cookie publicitaire ne se déclenche tant que l'internaute
-        n'a pas accepté.
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXXX"></script>
-        <script>gtag('js', new Date()); gtag('config', 'AW-XXXXXXXXXX');</script>
-    -->
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-W66XNWQB');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GT-TBN53ZNF"></script>
+    <script>
+        gtag('js', new Date());
+        gtag('config', 'GT-TBN53ZNF');
+    </script>
 
     <title>Nico&amp;Fils | Plombier urgence Béziers et Narbonne 24h/24 — 7j/7</title>
     <meta name="description"
@@ -663,6 +670,10 @@
 </head>
 
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W66XNWQB"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <a href="#main" class="sr-only">Aller au contenu</a>
 
     <!-- Icônes (sprite SVG) -->
@@ -1443,6 +1454,15 @@
         });
     }
 
+    /* ---------- Suivi des conversions : clics d'appel ---------- */
+    document.addEventListener("click", function (e) {
+        var link = e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
+        if (!link) return;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "phone_call_click", phone_number: link.getAttribute("href").replace("tel:", "") });
+        gtagPush("event", "phone_call_click", { phone_number: link.getAttribute("href").replace("tel:", "") });
+    });
+
     /* ---------- Envoi des formulaires (FormSubmit) ---------- */
     document.querySelectorAll('form[action*="formsubmit.co"]').forEach(function (form) {
         form.addEventListener("submit", function (e) {
@@ -1457,6 +1477,10 @@
                 body: new URLSearchParams(data).toString()
             }).then(function (r) {
                 if (!r.ok) throw new Error("submit failed");
+                var formName = form.closest("#quote-modal") ? "devis_service" : "contact";
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: "form_submit_success", form_name: formName });
+                gtagPush("event", "generate_lead", { form_name: formName });
                 form.innerHTML = '<p class="form-success">Merci, votre demande a bien été envoyée. Nous vous recontactons rapidement. Pour une urgence, appelez directement le 09 80 80 08 03.</p>';
             }).catch(function () {
                 if (submitBtn) submitBtn.disabled = false;
